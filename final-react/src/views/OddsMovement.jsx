@@ -50,6 +50,9 @@ export default function GameOddsLineMovement() {
   const averagesHomeTeam = {};
   const averagesAwayTeam = {};
 
+  console.log(homePointSpreadData)
+  console.log(awayPointSpreadData)
+
   const calculateDataAverageForChart = () => {
     homePointSpreadData.forEach((item) => {
       const { HomePointSpread, Updated } = item;
@@ -72,7 +75,7 @@ export default function GameOddsLineMovement() {
       }
     });
 
-    // Calculate the average for each day
+    //Calculate the average for each day
     Object.keys(averagesHomePoints).forEach((date) => {
       const values = averagesHomePoints[date];
       const average =

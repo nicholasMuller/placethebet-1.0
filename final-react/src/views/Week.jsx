@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
-import getTeamGameStats from "../utils/gameStats";
+// import getTeamGameStats from "../utils/gameStats";
 import getTeamInfo from "../utils/teamInfo";
 import getSeasonStats from "../utils/seasonStats";
 import MatchCard from "./MatchCard";
@@ -26,27 +26,37 @@ function seasonReducer(seasonData, action) {
 }
 
 function Week() {
+
+  // Automated date change
   let defaultYear = new Date().getFullYear();
   const current_date = new Date();
-  const week2Date = new Date(defaultYear, 9, 13);
-  if (current_date <= week2Date) {
+  const week2Date = new Date(defaultYear, 7, 1); // (0 = Jan.)
+  if (current_date <= week2Date) { //change the date once week2Date is in the past
     defaultYear = defaultYear - 1;
   }
 
+  //season/week dropdown selection
   const [season, setSeason] = useState(defaultYear);
   const [week, setWeek] = useState("1");
+
+  //Card Data
   const [weekData, setWeekData] = useState([]);
-  const [gameData, setGameData] = useState([]);
   const [teamData, dispatchTeamData] = useReducer(teamReducer, []);
   const [seasonData, dispatchSeasonData] = useReducer(seasonReducer, []);
   const [error, setError] = useState(null);
+    // const [gameData, setGameData] = useState([]); 
 
+  //update with the season/week change
   useEffect(() => {
-    getTeamGameStats(season, week)
-      .then((gameData) => setGameData(gameData))
-      .catch((error) => {
-        setError("Something went wrong. Please try again!");
-      });
+
+    //gameData (currently unused)
+    // getTeamGameStats(season, week)
+    //   .then((gameData) => setGameData(gameData))
+    //   .catch((error) => {
+    //     setError("Something went wrong. Please try again!");
+    //   });
+
+    //weekData
     getWeekInfo(season, week)
       .then((seasonInfo) => setWeekData(seasonInfo))
       .catch((error) => {
@@ -55,6 +65,8 @@ function Week() {
   }, [season, week]);
 
   useEffect(() => {
+
+    //teamData
     getTeamInfo()
       .then((teamData) =>
         dispatchTeamData({
@@ -65,6 +77,8 @@ function Week() {
       .catch((error) => {
         setError("Something went wrong. Please try again!");
       });
+
+    //seasonData
     getSeasonStats(season)
       .then((seasonData) =>
         dispatchSeasonData({
@@ -77,11 +91,11 @@ function Week() {
       });
   }, []);
 
+  //season/week change dropdown menu
   const handleWeekChange = (event) => {
     const buttonName = event.target.textContent;
     setWeek(buttonName.replace(/^\D+/g, ""));
   };
-
   const handleSeasonChange = (event) => {
     const buttonName = event.target.textContent;
     setSeason(buttonName.replace(/^\D+/g, ""));
