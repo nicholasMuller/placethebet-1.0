@@ -23,14 +23,42 @@ export default function ThirdDownMatchCard({ week, teamData, gameData, seasonDat
       awayTeamIMG = team.WikipediaLogoUrl;
     }
   });
-  seasonData[0].map((total) => {
+  const teamThirdDownRankings = seasonData[0].map((total) => {
+    const result = {
+        team: total.Team,
+        thirdPercentage: total.ThirdDownPercentage
+      };
+
     if (total.Team === homeTeam) {
-      home3rdDownConversion = total.ThirdDownPercentage;
+      home3rdDownConversion = total.ThirdDownPercentage
     }
     if (total.Team === awayTeam) {
       away3rdDownConversion = total.ThirdDownPercentage
     }
+    return result;
   });
+
+  teamThirdDownRankings.sort((a, b) => b.thirdPercentage - a.thirdPercentage);
+  teamThirdDownRankings.forEach((team, index) => {
+    console.log(team)
+    console.log(homeTeam)
+
+
+    team.thirdPercentage = index + 1;
+    if (team.team === homeTeam) {
+        home3rdDownRank = team.thirdPercentage
+      }
+    if (team.team === awayTeam) {
+        away3rdDownRank = team.thirdPercentage
+      }
+
+  });
+  console.log(teamThirdDownRankings)
+
+ seasonData[0].map((team, thirdPercentage) => ({
+    team: team.Team, thirdPercentage: team.ThirdDownPercentage
+
+  }));
 
   const homeDiff = parseFloat((away3rdDownConversion - home3rdDownConversion)).toFixed(
     2
@@ -127,26 +155,13 @@ export default function ThirdDownMatchCard({ week, teamData, gameData, seasonDat
           {away3rdDownConversion}%
         </p>
       </div>
-      {/* <div className="row data-body">
-        <p
-          className="card-text text-justify-left col"
-          style={{ textAlign: "center" }}>
-          {homeGivenPoints}
-        </p>
-        <div className="col" style={{ textAlign: "center" }}>
-          Opp. Pts.
-        </div>
-        <p
-          className="card-text text-justify-right col"
-          style={{ textAlign: "center" }}>
-          {awayGivenPoints}
-        </p>
-      </div> */}
       <div className="row data-body">
         <p
           className="card-text text-justify-left col"
           style={{
             textAlign: "center",
+            background: awayDiff > homeDiff ? "green" : "#B8262D",
+
           }}>
           {homeDiff}
         </p>
@@ -156,11 +171,31 @@ export default function ThirdDownMatchCard({ week, teamData, gameData, seasonDat
         <p
           className="card-text text-justify-right col"
           style={{
+            background: homeDiff > awayDiff ? "green" : "#B8262D",
+
             textAlign: "center",
           }}>
           {awayDiff}
         </p>
       </div>
+      <div className="row data-body">
+        <p
+          className="card-text text-justify-left col"
+          style={{ textAlign: "center" }}>
+          {home3rdDownRank}
+        </p>
+
+        <div className="col" style={{ textAlign: "center" }}>
+          Rank
+        </div>
+        <p
+          className="card-text text-justify-right col"
+          style={{ textAlign: "center" }}>
+         {away3rdDownRank}
+        </p>
+
+      </div>
+
       {/* <div className="row data-body">
         <p
           className="card-text text-justify-left col"
