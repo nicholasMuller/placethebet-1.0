@@ -24,3 +24,14 @@ h1 {
 #match-card:hover {
   cursor: pointer;
 }
+
+.nav-tabs .nav-item .nav-link {
+  background-color: #5c636a;
+  color: white;
+
+}
+
+.nav-tabs .nav-item .nav-link.active {
+  color: #333333;
+}
+

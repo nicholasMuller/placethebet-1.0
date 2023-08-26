@@ -3,7 +3,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 // import getTeamGameStats from "../utils/gameStats";
 import getTeamInfo from "../utils/teamInfo";
 import getSeasonStats from "../utils/seasonStats";
-import MatchCard from "./MatchCard";
+import PointsDiffMatchCard from "./PointsDiffMatchCard";
 import getWeekInfo from "../utils/weekInfo";
 import Error from "./Error";
 
@@ -206,6 +206,19 @@ function Week() {
           </div>
         </div>
       </div>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item custom-border" role="presentation">
+    <button className="nav-link active " id="points-diff-tab" data-bs-toggle="tab" data-bs-target="#points-diff"  type="button" role="tab" aria-controls="points-diff" aria-selected="true">Points Diff.</button>
+  </li>
+  <li class="nav-item custom-border" role="presentation">
+    <button className="nav-link " id="third-down-conversion-tab" data-bs-toggle="tab" data-bs-target="#third-down-conversion"  type="button" role="tab" aria-controls="third-down-conversion" aria-selected="false">3rd Down %</button>
+  </li>
+
+</ul>
+<div className="tab-content" id="myTabContent">
+  <div className="tab-pane fade show active" id="points-diff" role="tabpanel" aria-labelledby="points-diff-tab">
+
+      
       <div className="row row-cols-6 justify-content-around mt-4">
         {!weekData && (
           <div className="loader-container">
@@ -218,7 +231,7 @@ function Week() {
           seasonData[0] &&
           weekData.map((game, gameData) => {
             return (
-              <MatchCard
+              <PointsDiffMatchCard
                 key={game.GameKey.concat(game.HomeTeamID)}
                 week={game}
                 teamData={teamData}
@@ -228,6 +241,11 @@ function Week() {
             );
           })}
       </div>
+      </div>
+      <div className="tab-pane fade" id="third-down-conversion" role="tabpanel" aria-labelledby="third-down-conversion-tab">3rd Down Conversion</div>
+
+      </div>
+
       {error && <Error ifError={error} onClose={handleClose} />}
     </main>
   );
