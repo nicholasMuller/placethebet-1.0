@@ -6,6 +6,7 @@ import getSeasonStats from "../utils/seasonStats";
 import PointsDiffMatchCard from "./PointsDiffMatchCard";
 import getWeekInfo from "../utils/weekInfo";
 import Error from "./Error";
+import ThirdDownMatchCard from "./3rdDownMatchCard";
 
 function teamReducer(teamData, action) {
   switch (action.type) {
@@ -242,7 +243,32 @@ function Week() {
           })}
       </div>
       </div>
-      <div className="tab-pane fade" id="third-down-conversion" role="tabpanel" aria-labelledby="third-down-conversion-tab">3rd Down Conversion</div>
+      <div className="tab-pane fade" id="third-down-conversion" role="tabpanel" aria-labelledby="third-down-conversion-tab">
+      <div className="row row-cols-6 justify-content-around mt-4">
+        {!weekData && (
+          <div className="loader-container">
+            <ClipLoader color={"white"} size={75} />
+          </div>
+        )}
+        {!error &&
+          weekData &&
+          teamData[0] &&
+          seasonData[0] &&
+          weekData.map((game, gameData) => {
+            return (
+              <ThirdDownMatchCard
+                key={game.GameKey.concat(game.HomeTeamID)}
+                week={game}
+                teamData={teamData}
+                seasonData={seasonData}
+                weekData={weekData}
+              />
+            );
+          })}
+      </div>
+
+
+      </div>
 
       </div>
 
