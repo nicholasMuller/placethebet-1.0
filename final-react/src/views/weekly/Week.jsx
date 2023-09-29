@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useReducer } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
-// import getTeamGameStats from "../utils/gameStats";
-import getTeamInfo from "../utils/teamInfo";
-import getSeasonStats from "../utils/seasonStats";
-import PointsDiffMatchCard from "./PointsDiffMatchCard";
-import getWeekInfo from "../utils/weekInfo";
-import Error from "./Error";
-import ThirdDownMatchCard from "./3rdDownMatchCard";
-
+import getTeamInfo from "../../utils/teamInfo";
+import getSeasonStats from "../../utils/seasonStats";
+import PointsDiffMatchCard from "./tabs/PointsDiffMatchCard";
+import getWeekInfo from "../../utils/weekInfo";
+import Error from "../Error";
+import ThirdDownMatchCard from "./tabs/3rdDownMatchCard";
+import WeekData from "./Data";
 function teamReducer(teamData, action) {
   switch (action.type) {
     case "getTeamData":
@@ -26,6 +25,8 @@ function seasonReducer(seasonData, action) {
   }
 }
 
+
+
 function Week() {
 
   // Automated date change
@@ -40,27 +41,40 @@ function Week() {
   const [season, setSeason] = useState(defaultYear);
   const [week, setWeek] = useState("1");
 
+  const [allData, setData] = useState({
+    teamData: null,
+    seasonData: null,
+    matchups: null
+  });
+
+  useEffect(() => {
+    async function getData() {
+      const data = new WeekData();
+      await data.getWeekData(season, week);
+      setData({    
+        teamData: data.teamData,
+        seasonData: data.seasonData,
+        matchups: data.matchups}); 
+    }
+    getData();
+  }, [season, week]);
+
+  console.log(allData.matchups)
+
+  // Make the API calls a different file and return them as a state?
+
   //Card Data
   const [weekData, setWeekData] = useState([]);
   const [teamData, dispatchTeamData] = useReducer(teamReducer, []);
   const [seasonData, dispatchSeasonData] = useReducer(seasonReducer, []);
   const [error, setError] = useState(null);
-    // const [gameData, setGameData] = useState([]); 
 
   //update with the season/week change
   useEffect(() => {
-
-    //gameData (currently unused)
-    // getTeamGameStats(season, week)
-    //   .then((gameData) => setGameData(gameData))
-    //   .catch((error) => {
-    //     setError("Something went wrong. Please try again!");
-    //   });
-
     //weekData
     getWeekInfo(season, week)
       .then((seasonInfo) => setWeekData(seasonInfo))
-      .catch((error) => {
+      .catch(() => {
         setError("Something went wrong. Please try again!");
       });
   }, [season, week]);
@@ -148,6 +162,7 @@ function Week() {
               Choose Week
             </button>
 
+            {/* need to loop over weeks in the season to clean this up */}
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <button className="dropdown-item" onClick={handleWeekChange}>
                 Week 1
@@ -207,17 +222,19 @@ function Week() {
           </div>
         </div>
       </div>
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item custom-border" role="presentation">
-    <button className="nav-link active " id="points-diff-tab" data-bs-toggle="tab" data-bs-target="#points-diff"  type="button" role="tab" aria-controls="points-diff" aria-selected="true">Points Diff.</button>
-  </li>
-  <li class="nav-item custom-border" role="presentation">
-    <button className="nav-link " id="third-down-conversion-tab" data-bs-toggle="tab" data-bs-target="#third-down-conversion"  type="button" role="tab" aria-controls="third-down-conversion" aria-selected="false">3rd Down %</button>
-  </li>
 
-</ul>
-<div className="tab-content" id="myTabContent">
-  <div className="tab-pane fade show active" id="points-diff" role="tabpanel" aria-labelledby="points-diff-tab">
+      {/* create tabnav file to return these from */}
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item custom-border" role="presentation">
+          <button className="nav-link active " id="points-diff-tab" data-bs-toggle="tab" data-bs-target="#points-diff"  type="button" role="tab" aria-controls="points-diff" aria-selected="true">Points Diff.</button>
+        </li>
+        <li class="nav-item custom-border" role="presentation">
+          <button className="nav-link " id="third-down-conversion-tab" data-bs-toggle="tab" data-bs-target="#third-down-conversion"  type="button" role="tab" aria-controls="third-down-conversion" aria-selected="false">3rd Down %</button>
+        </li>
+      </ul>
+
+      <div className="tab-content" id="myTabContent">
+      <div className="tab-pane fade show active" id="points-diff" role="tabpanel" aria-labelledby="points-diff-tab">
 
       
       <div className="row row-cols-6 justify-content-around mt-4">
@@ -226,6 +243,7 @@ function Week() {
             <ClipLoader color={"white"} size={75} />
           </div>
         )}
+
         {!error &&
           weekData &&
           teamData[0] &&

@@ -40,9 +40,6 @@ export default function ThirdDownMatchCard({ week, teamData, gameData, seasonDat
 
   teamThirdDownRankings.sort((a, b) => b.thirdPercentage - a.thirdPercentage);
   teamThirdDownRankings.forEach((team, index) => {
-    console.log(team)
-    console.log(homeTeam)
-
 
     team.thirdPercentage = index + 1;
     if (team.team === homeTeam) {
@@ -53,7 +50,6 @@ export default function ThirdDownMatchCard({ week, teamData, gameData, seasonDat
       }
 
   });
-  console.log(teamThirdDownRankings)
 
  seasonData[0].map((team, thirdPercentage) => ({
     team: team.Team, thirdPercentage: team.ThirdDownPercentage

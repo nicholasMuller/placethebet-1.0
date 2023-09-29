@@ -1,6 +1,6 @@
 import { Route, Routes, Link } from "react-router-dom";
-import Home from "../views/Home";
-import Week from "../views/Week";
+import Home from "../views/home/Home";
+import Week from "../views/weekly/Week";
 import MatchDetails from "../views/MatchDetails";
 import GameOddsLineMovement from "../views/OddsMovement";
 

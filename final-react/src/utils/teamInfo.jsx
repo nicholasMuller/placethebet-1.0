@@ -6,7 +6,7 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-async function getTeamInfo(week) {
+async function getTeamInfo() {
   try {
     const response = await axios.get(nflUrl, {headers});
     return response.data;
