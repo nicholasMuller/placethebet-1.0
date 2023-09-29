@@ -15,7 +15,7 @@ export default function PointsDiffMatchCard({ week, teamData, gameData, seasonDa
   let seasonTeamAwayData;
   let weekTeamData;
 
-  teamData[0].map((team) => {
+  teamData.map((team) => {
     if (team.Key === homeTeam) {
       homeTeamIMG = team.WikipediaLogoUrl;
     }
@@ -23,7 +23,7 @@ export default function PointsDiffMatchCard({ week, teamData, gameData, seasonDa
       awayTeamIMG = team.WikipediaLogoUrl;
     }
   });
-  seasonData[0].map((total) => {
+  seasonData.map((total) => {
     if (total.Team === homeTeam) {
       homeEarnedPoints = (total.Score / total.Games).toFixed(2);
       homeGivenPoints = (total.OpponentScore / total.Games).toFixed(2);
@@ -57,7 +57,7 @@ export default function PointsDiffMatchCard({ week, teamData, gameData, seasonDa
       return team.Key === awayTeam;
     });
 
-    seasonData[0].map((seasonTeam) => {
+    seasonData.map((seasonTeam) => {
       if (seasonTeam.Team === homeTeam) {
         seasonTeamHomeData = seasonTeam;
       }

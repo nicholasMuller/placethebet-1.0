@@ -15,7 +15,7 @@ export default function ThirdDownMatchCard({ week, teamData, gameData, seasonDat
   let seasonTeamAwayData;
   let weekTeamData;
 
-  teamData[0].map((team) => {
+  teamData.map((team) => {
     if (team.Key === homeTeam) {
       homeTeamIMG = team.WikipediaLogoUrl;
     }
@@ -23,7 +23,7 @@ export default function ThirdDownMatchCard({ week, teamData, gameData, seasonDat
       awayTeamIMG = team.WikipediaLogoUrl;
     }
   });
-  const teamThirdDownRankings = seasonData[0].map((total) => {
+  const teamThirdDownRankings = seasonData.map((total) => {
     const result = {
         team: total.Team,
         thirdPercentage: total.ThirdDownPercentage
@@ -51,7 +51,7 @@ export default function ThirdDownMatchCard({ week, teamData, gameData, seasonDat
 
   });
 
- seasonData[0].map((team, thirdPercentage) => ({
+ seasonData.map((team, thirdPercentage) => ({
     team: team.Team, thirdPercentage: team.ThirdDownPercentage
 
   }));
@@ -73,7 +73,7 @@ export default function ThirdDownMatchCard({ week, teamData, gameData, seasonDat
       return team.Key === awayTeam;
     });
 
-    seasonData[0].map((seasonTeam) => {
+    seasonData.map((seasonTeam) => {
       if (seasonTeam.Team === homeTeam) {
         seasonTeamHomeData = seasonTeam;
       }

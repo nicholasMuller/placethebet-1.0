@@ -1,29 +1,9 @@
 import React, { useState, useEffect, useReducer } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
-import getTeamInfo from "../../utils/teamInfo";
-import getSeasonStats from "../../utils/seasonStats";
 import PointsDiffMatchCard from "./tabs/PointsDiffMatchCard";
-import getWeekInfo from "../../utils/weekInfo";
 import Error from "../Error";
 import ThirdDownMatchCard from "./tabs/3rdDownMatchCard";
 import WeekData from "./Data";
-function teamReducer(teamData, action) {
-  switch (action.type) {
-    case "getTeamData":
-      return [...teamData, action.payload.teamData];
-    default:
-      return teamData;
-  }
-}
-
-function seasonReducer(seasonData, action) {
-  switch (action.type) {
-    case "getSeasonData":
-      return [...seasonData, action.payload.seasonData];
-    default:
-      return seasonData;
-  }
-}
 
 
 
@@ -38,9 +18,9 @@ function Week() {
   }
 
   //season/week dropdown selection
+  const [error, setError] = useState(null);
   const [season, setSeason] = useState(defaultYear);
   const [week, setWeek] = useState("1");
-
   const [allData, setData] = useState({
     teamData: null,
     seasonData: null,
@@ -58,53 +38,6 @@ function Week() {
     }
     getData();
   }, [season, week]);
-
-  console.log(allData.matchups)
-
-  // Make the API calls a different file and return them as a state?
-
-  //Card Data
-  const [weekData, setWeekData] = useState([]);
-  const [teamData, dispatchTeamData] = useReducer(teamReducer, []);
-  const [seasonData, dispatchSeasonData] = useReducer(seasonReducer, []);
-  const [error, setError] = useState(null);
-
-  //update with the season/week change
-  useEffect(() => {
-    //weekData
-    getWeekInfo(season, week)
-      .then((seasonInfo) => setWeekData(seasonInfo))
-      .catch(() => {
-        setError("Something went wrong. Please try again!");
-      });
-  }, [season, week]);
-
-  useEffect(() => {
-
-    //teamData
-    getTeamInfo()
-      .then((teamData) =>
-        dispatchTeamData({
-          type: "getTeamData",
-          payload: { teamData: teamData },
-        })
-      )
-      .catch((error) => {
-        setError("Something went wrong. Please try again!");
-      });
-
-    //seasonData
-    getSeasonStats(season)
-      .then((seasonData) =>
-        dispatchSeasonData({
-          type: "getSeasonData",
-          payload: { seasonData: seasonData },
-        })
-      )
-      .catch((error) => {
-        setError("Something went wrong. Please try again!");
-      });
-  }, []);
 
   //season/week change dropdown menu
   const handleWeekChange = (event) => {
@@ -238,24 +171,24 @@ function Week() {
 
       
       <div className="row row-cols-6 justify-content-around mt-4">
-        {!weekData && (
+        {!allData.matchups && (
           <div className="loader-container">
             <ClipLoader color={"white"} size={75} />
           </div>
         )}
 
         {!error &&
-          weekData &&
-          teamData[0] &&
-          seasonData[0] &&
-          weekData.map((game, gameData) => {
+          allData.matchups &&
+          allData.teamData &&
+          allData.seasonData &&
+          allData.matchups.map((game, gameData) => {
             return (
               <PointsDiffMatchCard
                 key={game.GameKey.concat(game.HomeTeamID)}
                 week={game}
-                teamData={teamData}
-                seasonData={seasonData}
-                weekData={weekData}
+                teamData={allData.teamData}
+                seasonData={allData.seasonData}
+                weekData={allData.matchups}
               />
             );
           })}
@@ -263,23 +196,23 @@ function Week() {
       </div>
       <div className="tab-pane fade" id="third-down-conversion" role="tabpanel" aria-labelledby="third-down-conversion-tab">
       <div className="row row-cols-6 justify-content-around mt-4">
-        {!weekData && (
+        {!allData.matchups && (
           <div className="loader-container">
             <ClipLoader color={"white"} size={75} />
           </div>
         )}
         {!error &&
-          weekData &&
-          teamData[0] &&
-          seasonData[0] &&
-          weekData.map((game, gameData) => {
+          allData.matchups &&
+          allData.teamData &&
+          allData.seasonData &&
+          allData.matchups.map((game, gameData) => {
             return (
               <ThirdDownMatchCard
                 key={game.GameKey.concat(game.HomeTeamID)}
                 week={game}
-                teamData={teamData}
-                seasonData={seasonData}
-                weekData={weekData}
+                teamData={allData.teamData}
+                seasonData={allData.seasonData}
+                weekData={allData.matchups}
               />
             );
           })}
