@@ -1,127 +1,84 @@
-import React, { useState, useEffect} from "react";
-import getDraftKings from "../../utils/DraftKings";
+import React, { useState, useEffect } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
+import Error from "../Error";
+import DKCards from "../Odds/Odds";
+import OddsData from "./Data";
 
+function Odds() {
+  //season/week dropdown selection
+  const [error, setError] = useState(null);
+  const [allData, setData] = useState({
+    teamData: null,
+    odds: null,
+  });
 
-export default function OddsCards({ matchup, teamData, seasonData, weekData }) {
-    
-        const homeTeam = matchup["home_team"];
-        const awayTeam = matchup["away_team"];
-        let home = homeTeam === matchup["bookmakers"][2]["markets"][0]["outcomes"][0]["name"] ? 0 : 1;
-        let away = awayTeam === matchup["bookmakers"][2]["markets"][0]["outcomes"][0]["name"] ? 0 : 1;
-        let homeTeamIMG
-        let awayTeamIMG
-        let homeAbrev
-        let awayAbrev
-
-        let homeMoneyline = matchup["bookmakers"][2]["markets"][0]["outcomes"][home]["price"]
-        let homePointSpread = matchup["bookmakers"][2]["markets"][1]["outcomes"][home]["point"]
-        let homeSpread = matchup["bookmakers"][2]["markets"][1]["outcomes"][home]["price"]
-        let awayMoneyline = matchup["bookmakers"][2]["markets"][0]["outcomes"][away]["price"]
-        let awayPointSpread = matchup["bookmakers"][2]["markets"][1]["outcomes"][away]["point"]
-        let awaySpread = matchup["bookmakers"][2]["markets"][1]["outcomes"][away]["price"]
-
-    teamData.map((team) => {
-        if (team.FullName === homeTeam) {
-          homeTeamIMG = team.WikipediaLogoUrl;
-          homeAbrev = team.Key
-        }
-        if (team.FullName === awayTeam) {
-          awayTeamIMG = team.WikipediaLogoUrl;
-          awayAbrev = team.Key
-        }
+  useEffect(() => {
+    async function getData() {
+      const data = new OddsData();
+      await data.getOddsData();
+      setData({
+        teamData: data.teamData,
+        odds: data.odds
       });
-    
-      return(
-      <div
-      id="match-card"
-      onClick={() => handleClick(homeTeam, awayTeam, seasonData)}
-      className="card col my-3"
-      style={{ width: "18rem", borderWidth: "5px" }}>
-      <div className="row">
-        <img
-          className="float-left col mt-4"
-          style={{ width: "75px", height: "75px", objectFit: "contain" }}
-          src={homeTeamIMG}
-          alt={homeTeam}
-        />
-        <h5 className="mt-5 col " style={{ textAlign: "center" }}>
-          VS
-        </h5>
-        <img
-          className="float-right col mt-4"
-          style={{ width: "75px", height: "75px", objectFit: "contain" }}
-          src={awayTeamIMG}
-          alt={awayTeam}
-        />
-      </div>
-      <div className="row card-body">
-        <h6
-          className="card-text text-justify-left col"
-          style={{ textAlign: "center", color: "white" }}>
-          {homeAbrev}
-        </h6>
-        <div className="mx-5 col"></div>
-        <h6
-          className="card-text text-justify-right col"
-          style={{ textAlign: "center", color: "white" }}>
-          {awayAbrev}
-        </h6>
-      </div>
-      <div className="row data-body">
-        <p
-          className="card-text text-justify-left col"
-          style={{ textAlign: "center" }}>
-          {homeMoneyline}
-        </p>
-        <div className="col" style={{ textAlign: "center" }}>
-          Moneyline
+    }
+    getData();
+  }, []);
+
+  const handleClose = () => {
+    setError(null);
+  };
+
+  return (
+    <main className="container">
+      {/* create tabnav file to return these from */}
+      <ul className="nav nav-tabs" id="myTab" role="tablist">
+        <li className="nav-item custom-border" role="presentation">
+          <button
+            className="nav-link "
+            id="DK-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#DK"
+            type="button"
+            role="tab"
+            aria-controls="DK"
+            aria-selected="false"
+          >
+            Draft Kings
+          </button>
+        </li>
+      </ul>
+      <div className="tab-content" id="myTabContent">
+        <div
+          className="tab-pane fade"
+          id="DK"
+          role="tabpanel"
+          aria-labelledby="DK-tab"
+        >
+          <div className="row row-cols-6 justify-content-around mt-4">
+            {!allData.matchups && (
+              <div className="loader-container">
+                <ClipLoader color={"white"} size={75} />
+              </div>
+            )}
+            {!error &&
+              allData.teamData &&
+              allData.odds.map((game, gameData) => {
+                return (
+                  <DKCards
+                    key={game.id}
+                    matchup={game}
+                    teamData={allData.teamData}
+                  />
+                );
+              })}
+          </div>
         </div>
-        <p
-          className="card-text text-justify-right col"
-          style={{ textAlign: "center" }}>
-          {awayMoneyline}
-        </p>
+        
       </div>
-      <div className="row data-body">
-        <p
-          className="card-text text-justify-left col"
-          style={{
-            textAlign: "center",
-            // background: awayDiff > homeDiff ? "green" : "#B8262D",
 
-          }}>
-          {homePointSpread}
-        </p>
-        <div className="col" style={{ textAlign: "center" }}>
-          Pt.Spread
-        </div>
-        <p
-          className="card-text text-justify-right col"
-          style={{
-            // background: homeDiff > awayDiff ? "green" : "#B8262D",
-
-            textAlign: "center",
-          }}>
-          {awayPointSpread}
-        </p>
-      </div>
-      <div className="row data-body">
-        <p
-          className="card-text text-justify-left col"
-          style={{ textAlign: "center" }}>
-          {homeSpread}
-        </p>
-
-        <div className="col" style={{ textAlign: "center" }}>
-          At
-        </div>
-        <p
-          className="card-text text-justify-right col"
-          style={{ textAlign: "center" }}>
-         {awaySpread}
-        </p>
-
-      </div>
-    </div>
-      )
+      {error && <Error ifError={error} onClose={handleClose} />}
+    </main>
+  );
 }
+
+export default Odds;

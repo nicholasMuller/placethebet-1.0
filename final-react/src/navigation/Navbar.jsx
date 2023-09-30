@@ -1,9 +1,7 @@
 import { Route, Routes, Link } from "react-router-dom";
 import Home from "../views/home/Home";
 import Week from "../views/weekly/Week";
-import MatchDetails from "../views/MatchDetails";
-import GameOddsLineMovement from "../views/OddsMovement";
-import OddsCards from "../views/Odds/Odds";
+import Odds from "../views/Odds/Odds";
 
 function Navbar() {
   return (
@@ -42,9 +40,7 @@ function Navbar() {
       <Routes>
         <Route path="/" element={<Home title="placethebet.net" />} />
         <Route path="/week" element={<Week />} />
-        <Route path="/matchdetails" element={<MatchDetails />} />
-        <Route path="/oddsmovement" element={<GameOddsLineMovement />} />
-        <Route path = "/odds" element= {<OddsCards/>}/>
+        <Route path = "/odds" element= {<Odds/>}/>
       </Routes>
     </div>
   );

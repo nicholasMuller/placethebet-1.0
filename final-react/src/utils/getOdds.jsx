@@ -2,7 +2,7 @@ import axios from "axios";
 
 const oddsUrl = import.meta.env.VITE_ODDS_URL;
 
-async function getDraftKings(season) {
+async function getOdds() {
   try {
     const response = await axios.get(oddsUrl);
     return response.data;
@@ -11,4 +11,4 @@ async function getDraftKings(season) {
   }
 }
 
-export default getDraftKings;
+export default getOdds;

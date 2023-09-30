@@ -5,7 +5,6 @@ import Error from "../Error";
 import ThirdDownMatchCard from "./tabs/3rdDownMatchCard";
 import WeekData from "./Data";
 import { getDefaultYear } from "./DateTime";
-import OddsCards from "../Odds/Odds";
 
 function Week() {
   //season/week dropdown selection
@@ -16,7 +15,6 @@ function Week() {
     teamData: null,
     seasonData: null,
     matchups: null,
-    odds: null,
   });
 
   useEffect(() => {
@@ -27,7 +25,6 @@ function Week() {
         teamData: data.teamData,
         seasonData: data.seasonData,
         matchups: data.matchups,
-        odds: data.odds
       });
     }
     getData();
@@ -182,20 +179,6 @@ function Week() {
             3rd Down %
           </button>
         </li>
-        <li class="nav-item custom-border" role="presentation">
-          <button
-            className="nav-link "
-            id="odds-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#odds"
-            type="button"
-            role="tab"
-            aria-controls="odds"
-            aria-selected="false"
-          >
-            Odds
-          </button>
-        </li>
       </ul>
 
       <div className="tab-content" id="myTabContent">
@@ -257,39 +240,7 @@ function Week() {
                 );
               })}
           </div>
-        </div>
-
-        <div
-          className="tab-pane fade"
-          id="odds"
-          role="tabpanel"
-          aria-labelledby="odds-tab"
-        >
-          <div className="row row-cols-6 justify-content-around mt-4">
-            {!allData.matchups && (
-              <div className="loader-container">
-                <ClipLoader color={"white"} size={75} />
-              </div>
-            )}
-            {!error &&
-              allData.matchups &&
-              allData.teamData &&
-              allData.seasonData &&
-              allData.matchups &&
-              allData.odds.map((game, gameData) => {
-                return (
-                  <OddsCards
-                    key={game.id}
-                    matchup={game}
-                    teamData={allData.teamData}
-                    seasonData={allData.seasonData}
-                    weekData={allData.matchups}
-                  />
-                );
-              })}
-          </div>
-        </div>
-        
+        </div>    
       </div>
 
       {error && <Error ifError={error} onClose={handleClose} />}
