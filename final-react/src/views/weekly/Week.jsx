@@ -5,13 +5,9 @@ import Error from "../Error";
 import ThirdDownMatchCard from "./tabs/3rdDownMatchCard";
 import WeekData from "./Data";
 import { getDefaultYear } from "./DateTime";
-import getOdds from "./DraftKings";
+import OddsCards from "../Odds/Odds";
 
 function Week() {
-
-
-
-
   //season/week dropdown selection
   const [error, setError] = useState(null);
   const [season, setSeason] = useState(getDefaultYear());
@@ -19,26 +15,20 @@ function Week() {
   const [allData, setData] = useState({
     teamData: null,
     seasonData: null,
-    matchups: null
+    matchups: null,
+    odds: null,
   });
-  const [odds, setOdds] = useState(null);
 
-  useEffect(()=> {
-    async function getDraftKings(){
-      setOdds(await getOdds());
-    }
-    getDraftKings()
-  },[])
-
-  console.log(odds)
   useEffect(() => {
     async function getData() {
       const data = new WeekData();
       await data.getWeekData(season, week);
-      setData({    
+      setData({
         teamData: data.teamData,
         seasonData: data.seasonData,
-        matchups: data.matchups}); 
+        matchups: data.matchups,
+        odds: data.odds
+      });
     }
     getData();
   }, [season, week]);
@@ -73,7 +63,8 @@ function Week() {
               id="dropdownMenuButton"
               data-bs-toggle="dropdown"
               aria-haspopup="true"
-              aria-expanded="false">
+              aria-expanded="false"
+            >
               Choose Season
             </button>
 
@@ -95,7 +86,8 @@ function Week() {
               id="dropdownMenuButton"
               data-bs-toggle="dropdown"
               aria-haspopup="true"
-              aria-expanded="false">
+              aria-expanded="false"
+            >
               Choose Week
             </button>
 
@@ -163,68 +155,141 @@ function Week() {
       {/* create tabnav file to return these from */}
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item custom-border" role="presentation">
-          <button className="nav-link active " id="points-diff-tab" data-bs-toggle="tab" data-bs-target="#points-diff"  type="button" role="tab" aria-controls="points-diff" aria-selected="true">Points Diff.</button>
+          <button
+            className="nav-link active "
+            id="points-diff-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#points-diff"
+            type="button"
+            role="tab"
+            aria-controls="points-diff"
+            aria-selected="true"
+          >
+            Points Diff.
+          </button>
         </li>
         <li class="nav-item custom-border" role="presentation">
-          <button className="nav-link " id="third-down-conversion-tab" data-bs-toggle="tab" data-bs-target="#third-down-conversion"  type="button" role="tab" aria-controls="third-down-conversion" aria-selected="false">3rd Down %</button>
+          <button
+            className="nav-link "
+            id="third-down-conversion-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#third-down-conversion"
+            type="button"
+            role="tab"
+            aria-controls="third-down-conversion"
+            aria-selected="false"
+          >
+            3rd Down %
+          </button>
+        </li>
+        <li class="nav-item custom-border" role="presentation">
+          <button
+            className="nav-link "
+            id="odds-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#odds"
+            type="button"
+            role="tab"
+            aria-controls="odds"
+            aria-selected="false"
+          >
+            Odds
+          </button>
         </li>
       </ul>
 
       <div className="tab-content" id="myTabContent">
-      <div className="tab-pane fade show active" id="points-diff" role="tabpanel" aria-labelledby="points-diff-tab">
+        <div
+          className="tab-pane fade show active"
+          id="points-diff"
+          role="tabpanel"
+          aria-labelledby="points-diff-tab"
+        >
+          <div className="row row-cols-6 justify-content-around mt-4">
+            {!allData.matchups && (
+              <div className="loader-container">
+                <ClipLoader color={"white"} size={75} />
+              </div>
+            )}
 
-      
-      <div className="row row-cols-6 justify-content-around mt-4">
-        {!allData.matchups && (
-          <div className="loader-container">
-            <ClipLoader color={"white"} size={75} />
+            {!error &&
+              allData.matchups &&
+              allData.teamData &&
+              allData.seasonData &&
+              allData.matchups.map((game, gameData) => {
+                return (
+                  <PointsDiffMatchCard
+                    key={game.GameKey.concat(game.HomeTeamID)}
+                    matchup={game}
+                    teamData={allData.teamData}
+                    seasonData={allData.seasonData}
+                    weekData={allData.matchups}
+                  />
+                );
+              })}
           </div>
-        )}
-
-        {!error &&
-          allData.matchups &&
-          allData.teamData &&
-          allData.seasonData &&
-          allData.matchups.map((game, gameData) => {
-            return (
-              <PointsDiffMatchCard
-                key={game.GameKey.concat(game.HomeTeamID)}
-                week={game}
-                teamData={allData.teamData}
-                seasonData={allData.seasonData}
-                weekData={allData.matchups}
-              />
-            );
-          })}
-      </div>
-      </div>
-      <div className="tab-pane fade" id="third-down-conversion" role="tabpanel" aria-labelledby="third-down-conversion-tab">
-      <div className="row row-cols-6 justify-content-around mt-4">
-        {!allData.matchups && (
-          <div className="loader-container">
-            <ClipLoader color={"white"} size={75} />
+        </div>
+        <div
+          className="tab-pane fade"
+          id="third-down-conversion"
+          role="tabpanel"
+          aria-labelledby="third-down-conversion-tab"
+        >
+          <div className="row row-cols-6 justify-content-around mt-4">
+            {!allData.matchups && (
+              <div className="loader-container">
+                <ClipLoader color={"white"} size={75} />
+              </div>
+            )}
+            {!error &&
+              allData.matchups &&
+              allData.teamData &&
+              allData.seasonData &&
+              allData.matchups.map((game, gameData) => {
+                return (
+                  <ThirdDownMatchCard
+                    key={game.GameKey.concat(game.HomeTeamID)}
+                    matchup={game}
+                    teamData={allData.teamData}
+                    seasonData={allData.seasonData}
+                    weekData={allData.matchups}
+                  />
+                );
+              })}
           </div>
-        )}
-        {!error &&
-          allData.matchups &&
-          allData.teamData &&
-          allData.seasonData &&
-          allData.matchups.map((game, gameData) => {
-            return (
-              <ThirdDownMatchCard
-                key={game.GameKey.concat(game.HomeTeamID)}
-                week={game}
-                teamData={allData.teamData}
-                seasonData={allData.seasonData}
-                weekData={allData.matchups}
-              />
-            );
-          })}
-      </div>
+        </div>
 
-
-      </div>
-
+        <div
+          className="tab-pane fade"
+          id="odds"
+          role="tabpanel"
+          aria-labelledby="odds-tab"
+        >
+          <div className="row row-cols-6 justify-content-around mt-4">
+            {!allData.matchups && (
+              <div className="loader-container">
+                <ClipLoader color={"white"} size={75} />
+              </div>
+            )}
+            {!error &&
+              allData.matchups &&
+              allData.teamData &&
+              allData.seasonData &&
+              allData.matchups &&
+              allData.odds.map((game, gameData) => {
+                return (
+                  <OddsCards
+                    key={game.id}
+                    matchup={game}
+                    teamData={allData.teamData}
+                    seasonData={allData.seasonData}
+                    weekData={allData.matchups}
+                  />
+                );
+              })}
+          </div>
+        </div>
+        
       </div>
 
       {error && <Error ifError={error} onClose={handleClose} />}

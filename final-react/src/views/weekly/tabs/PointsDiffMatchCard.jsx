@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function PointsDiffMatchCard({ week, teamData, seasonData, weekData }) {
-  const homeTeam = week["HomeTeam"];
-  const awayTeam = week["AwayTeam"];
+export default function PointsDiffMatchCard({ matchup, teamData, seasonData, weekData }) {
+  const homeTeam = matchup["HomeTeam"];
+  const awayTeam = matchup["AwayTeam"];
   let homeTeamIMG;
   let awayTeamIMG;
   let homeEarnedPoints;
