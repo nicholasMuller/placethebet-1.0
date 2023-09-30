@@ -14,7 +14,7 @@ export default class WeekData{
     async getWeekData(season, week){
         try{
             this.teamData = await getTeamInfo()
-            this.seasonData = await getSeasonStats()
+            this.seasonData = await getSeasonStats(season)
             this.matchups = await getWeekInfo(season, week)
         }catch (error) {
             console.error('Error fetching data:', error);

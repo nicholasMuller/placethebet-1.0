@@ -4,29 +4,33 @@ import PointsDiffMatchCard from "./tabs/PointsDiffMatchCard";
 import Error from "../Error";
 import ThirdDownMatchCard from "./tabs/3rdDownMatchCard";
 import WeekData from "./Data";
-
-
+import { getDefaultYear } from "./DateTime";
+import getOdds from "./DraftKings";
 
 function Week() {
 
-  // Automated date change
-  let defaultYear = new Date().getFullYear();
-  const current_date = new Date();
-  const week2Date = new Date(defaultYear, 7, 1); // (0 = Jan.)
-  if (current_date <= week2Date) { //change the date once week2Date is in the past
-    defaultYear = defaultYear - 1;
-  }
+
+
 
   //season/week dropdown selection
   const [error, setError] = useState(null);
-  const [season, setSeason] = useState(defaultYear);
+  const [season, setSeason] = useState(getDefaultYear());
   const [week, setWeek] = useState("1");
   const [allData, setData] = useState({
     teamData: null,
     seasonData: null,
     matchups: null
   });
+  const [odds, setOdds] = useState(null);
 
+  useEffect(()=> {
+    async function getDraftKings(){
+      setOdds(await getOdds());
+    }
+    getDraftKings()
+  },[])
+
+  console.log(odds)
   useEffect(() => {
     async function getData() {
       const data = new WeekData();
