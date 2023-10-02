@@ -5,7 +5,6 @@ import DKCards from "../Odds/Odds";
 import OddsData from "./Data";
 
 function Odds() {
-  //season/week dropdown selection
   const [error, setError] = useState(null);
   const [allData, setData] = useState({
     teamData: null,
@@ -22,7 +21,7 @@ function Odds() {
       });
     }
     getData();
-  }, []);
+  });
 
   const handleClose = () => {
     setError(null);
