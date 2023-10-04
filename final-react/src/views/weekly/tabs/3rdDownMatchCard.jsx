@@ -192,28 +192,28 @@ export default function ThirdDownMatchCard({ matchup, teamData, seasonData, week
 
       </div>
 
-      {/* <div className="row data-body">
-        <p
-          className="card-text text-justify-left col"
-          style={{
-            textAlign: "center",
-            background: homePrediction > awayPrediction ? "green" : "#B8262D",
-            margin: "0",
-          }}>
-          {homePrediction}
-        </p>
-        <div className="col" style={{ textAlign: "center" }}>
-          Prediction
-        </div>
+      <div className="row data-body">
+        {home3rdDownConversion - away3rdDownConversion > 5 && home3rdDownRank - away3rdDownRank < -10 &&
         <p
           className="card-text text-justify-right col"
           style={{
             textAlign: "center",
-            background: awayPrediction > homePrediction ? "green" : "#B8262D",
+            background: "green",
           }}>
-          {awayPrediction}
+          {homeTeam}
         </p>
-      </div> */}
+}
+        {away3rdDownConversion - home3rdDownConversion > 5 && away3rdDownRank - home3rdDownRank < -10 &&
+        <p
+          className="card-text text-justify-right col"
+          style={{
+            textAlign: "center",
+            background: "green",
+          }}>
+          {awayTeam}
+        </p>
+}
+      </div>
     </div>
   );
 }
